@@ -2,42 +2,59 @@ const currentGameVersion = "2.4.0";
 const canvas = document.getElementById("gameCanvas");
 const context = canvas.getContext("2d");
 
-//Images
+var imagesLoaded = 0;
+var imagesNeededToBeLoaded = 0;
 
-const titleImage = new Image();
-titleImage.src = "menu/title.png";
-const playButtonImage = new Image();
-playButtonImage.src = "menu/play_button.png";
-const optionsButtonImage = new Image();
-optionsButtonImage.src = "menu/options_button.png";
-const optionsButtonHoveredImage = new Image();
-optionsButtonHoveredImage.src = "menu/options_button_hovered.png";
-const backButtonImage = new Image();
-backButtonImage.src = "menu/back_button.png";
-const optionUpButtonImage = new Image();
-optionUpButtonImage.src = "menu/option_up_button.png";
-const optionUpButtonHoveredImage = new Image();
-optionUpButtonHoveredImage.src = "menu/option_up_button_hovered.png";
-const optionDownButtonImage = new Image();
-optionDownButtonImage.src = "menu/option_down_button.png";
-const optionDownButtonHoveredImage = new Image();
-optionDownButtonHoveredImage.src = "menu/option_down_button_hovered.png";
-const configureButtonImage = new Image();
-configureButtonImage.src = "menu/configure_button.png";
-const configureButtonHoveredImage = new Image();
-configureButtonHoveredImage.src = "menu/configure_button_hovered.png";
-
-var displayType = 1;
-
-if (typeof(Storage) !== "undefined") {
+class LoadableImage {
 	
-	if (localStorage.displayConfiguration) {
+	constructor(imageSource) {
 		
-		displayType = localStorage.displayConfiguration;
-	
+		this.image = new Image();
+		this.image.onload = function() {
+			
+			imagesLoaded++;
+			
+		}
+		this.image.src = imageSource;
+		
+		imagesNeededToBeLoaded++;
+		
 	}
 	
 }
+
+//Images
+
+//Text
+
+const titleImage = new LoadableImage("menu/title.png");
+const playButtonImage = new LoadableImage("menu/play_button.png");
+const difficultyImage = new LoadableImage("menu/difficulty.png");
+const easyImage = new LoadableImage("menu/easy.png");
+const mediumImage = new LoadableImage("menu/medium.png");
+
+//Icons
+
+const optionsButtonImage = new LoadableImage("menu/options_button.png");
+const optionsButtonHoveredImage = new LoadableImage("menu/options_button_hovered.png");
+const optionsButtonActiveImage = new LoadableImage("menu/options_button_active.png");
+
+const backButtonImage = new LoadableImage("menu/back_button.png");
+
+const leftArrowButtonImage = new LoadableImage("menu/left_arrow_button.png");
+const rightArrowButtonImage = new LoadableImage("menu/right_arrow_button.png");
+
+const optionUpButtonImage = new LoadableImage("menu/option_up_button.png");
+const optionUpButtonHoveredImage = new LoadableImage("menu/option_up_button_hovered.png");
+
+const optionDownButtonImage = new LoadableImage("menu/option_down_button.png");
+const optionDownButtonHoveredImage = new LoadableImage("menu/option_down_button_hovered.png");
+
+const configureButtonImage = new LoadableImage("menu/configure_button.png");
+const configureButtonHoveredImage = new LoadableImage("menu/configure_button_hovered.png");
+
+const statisticsButtonImage = new LoadableImage("menu/statistics_button.png");
+const statisticsButtonHoveredImage = new LoadableImage("menu/statistics_button_hovered.png");
 
 var scaleX = 0;
 var scaleY = 0;
@@ -53,6 +70,7 @@ var isMouseOnCanvas;
 
 var pressedKeys = [];
 var releasedKeys = [];
+var pressedKeyNames = [];
 
 window.addEventListener('keydown', this.keyPressedEvent, false);
 window.addEventListener('keyup', this.keyReleasedEvent, false);
@@ -122,6 +140,7 @@ function keyPressedEvent(e) {
 	if (pressedKeys.indexOf(e.keyCode) == -1) {
 		
 		pressedKeys.push(e.keyCode);
+		pressedKeyNames.push(e.key);
 		
 	}
 
@@ -131,6 +150,7 @@ function keyReleasedEvent(e) {
 	
 	releasedKeys.push(e.keyCode);
 	removeKey(e.keyCode);
+	removeKeyName(e.key);
 	
 }
 
@@ -141,12 +161,35 @@ function removeKey(e) {
 	if (this.removeKeyIndex > -1) {
 		
 		pressedKeys.splice(this.removeKeyIndex, 1);
+		
+	}
+}
+
+function removeKeyName(e) {
+	
+	this.removeKeyIndex = pressedKeyNames.indexOf(e);
+	
+	if (this.removeKeyIndex > -1) {
+		
+		pressedKeyNames.splice(this.removeKeyIndex, 1);
 	
 	}
 }
 
 function drawHoverText(text) {
 	
+	context.textAlign = "left";
+	context.font = (10 * scaleX) + "px Arial";
+	context.fillStyle = "#000000";
 	
+	if (mouseX + context.measureText(text).width + 10 > canvas.width) {
+		
+		context.fillText(text, mouseX - context.measureText(text).width - 5, mouseY + 10);
+		
+	} else {
+		
+		context.fillText(text, mouseX + 10, mouseY + 10);
+		
+	}
 	
 }
