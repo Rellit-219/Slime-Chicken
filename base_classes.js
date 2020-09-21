@@ -108,11 +108,12 @@ class DynamicMouseBox {
 }
 class DynamicImage {
 	
-	constructor(image, x, y, width, height) {
+	constructor(image, x, y, scale) {
 		
-		this.image = image
-		this.width = width;
-		this.height = height;
+		this.image = image;
+		
+		this.width = this.image.image.naturalWidth * scale;
+		this.height = this.image.image.naturalHeight * scale;
 		
 		if (!"center".localeCompare(x)) {
 			
@@ -174,10 +175,10 @@ class DynamicImage {
 		
 	}
 	
-	setDimensions(width, height) {
+	setScale(scale) {
 		
-		this.width = width;
-		this.height = height;
+		this.width = this.image.image.naturalWidth * scale;
+		this.height = this.image.image.naturalHeight * scale;
 		
 		if (this.xIsCentered) {
 			
@@ -195,7 +196,7 @@ class DynamicImage {
 	
 	draw() {
 		
-		context.drawImage(this.image, this.x * scaleX, this.y * scaleY, this.width * scaleX, this.height * scaleY);
+		context.drawImage(this.image.image, this.x * scaleX, this.y * scaleY, this.width * scaleX, this.height * scaleY);
 		
 	}
 	
@@ -244,18 +245,18 @@ class DynamicText {
 }
 class DynamicButton {
 	
-	constructor(image, x, y, width, height) {
+	constructor(image, x, y, scale) {
 		
 		this.isHoveringOver = false;
 		this.hoverOutResult = function(){};
 		this.hoverOverResult = function(){};
 		this.leftClickResult = function(){};
 		
-		this.mouseBox = new DynamicMouseBox(x, y, width, height);
-		
 		this.image = image;
-		this.width = width;
-		this.height = height;
+		this.width = this.image.image.naturalWidth * scale;
+		this.height = this.image.image.naturalHeight * scale;
+		
+		this.mouseBox = new DynamicMouseBox(x, y, this.width, this.height);
 		
 		if (!"center".localeCompare(x)) {
 			
@@ -319,12 +320,12 @@ class DynamicButton {
 		
 	}
 	
-	setDimensions(width, height) {
+	setScale(scale) {
 		
-		this.mouseBox.setDimensions(width, height);
+		this.width = this.image.image.naturalWidth * scale;
+		this.height = this.image.image.naturalHeight * scale;
 		
-		this.width = width;
-		this.height = height;
+		this.mouseBox.setDimensions(this.width, this.height);
 		
 		if (this.xIsCentered) {
 			
@@ -368,7 +369,7 @@ class DynamicButton {
 	
 	draw() {
 		
-		context.drawImage(this.image, this.x * scaleX, this.y * scaleY, this.width * scaleX, this.height * scaleY);
+		context.drawImage(this.image.image, this.x * scaleX, this.y * scaleY, this.width * scaleX, this.height * scaleY);
 		
 	}
 	

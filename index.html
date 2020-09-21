@@ -186,6 +186,7 @@
 			</div>
 			<div style="padding-top: 50px"></div>
 			<canvas id="gameCanvas" style="border:1px solid black"></canvas>
+			<script src="local_saves.js"></script>
 			<script src="base_variables.js"></script>
 			<script src="base_classes.js"></script>
 			<script src="screens.js"></script>
@@ -193,7 +194,7 @@
 				
 				document.title = "Slime Chicken " + currentGameVersion;
 				
-				currentScreen = new MainMenuScreen();
+				currentScreen = new LoadingScreen();
 				var canvasWidthOffset = 3;
 				var canvasHeightOffset = 2.5;
 				setInterval(generalUpdate, 1);
@@ -206,29 +207,32 @@
 					currentScreen.generalUpdate();
 					
 				}
+				
 				function updatePhysics() {
 					
 					currentScreen.updatePhysics();
 					
 				}
+				
 				function updateCollision() {
 					
 					currentScreen.updateCollision();
 					
 				}
+				
 				function draw() {
 					
-					if (displayType == 0 && canvasWidthOffset != 4) {
+					if (savedOptions.displayType == 0 && canvasWidthOffset != 4) {
 						
 						canvasWidthOffset = 4;
 						canvasHeightOffset = 3.5;
 						
-					} else if (displayType == 1 && canvasWidthOffset != 3) {
+					} else if (savedOptions.displayType == 1 && canvasWidthOffset != 3) {
 						
 						canvasWidthOffset = 3;
 						canvasHeightOffset = 2.5;
 						
-					} else if (displayType == 2 && canvasWidthOffset != 2.5) {
+					} else if (savedOptions.displayType == 2 && canvasWidthOffset != 2.5) {
 						
 						canvasWidthOffset = 2.5;
 						canvasHeightOffset = 2;
@@ -243,7 +247,7 @@
 					scaleX = canvas.width / 600;
 					scaleY = canvas.height / 400;
 					
-					context.fillStyle = "white";
+					context.fillStyle = "#376dc4";
 					context.fillRect(0, 0, canvas.width, canvas.height);
 					currentScreen.draw();
 					
