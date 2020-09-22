@@ -15,6 +15,7 @@ class LoadableImage {
 			imagesLoaded++;
 			
 		}
+		
 		this.image.src = imageSource;
 		
 		imagesNeededToBeLoaded++;
@@ -30,8 +31,10 @@ class LoadableImage {
 const titleImage = new LoadableImage("menu/title.png");
 const playButtonImage = new LoadableImage("menu/play_button.png");
 const difficultyImage = new LoadableImage("menu/difficulty.png");
+const tutorialImage = new LoadableImage("menu/tutorial.png");
 const easyImage = new LoadableImage("menu/easy.png");
 const mediumImage = new LoadableImage("menu/medium.png");
+const difficultImage = new LoadableImage("menu/difficult.png");
 
 //Icons
 
@@ -55,6 +58,12 @@ const configureButtonHoveredImage = new LoadableImage("menu/configure_button_hov
 
 const statisticsButtonImage = new LoadableImage("menu/statistics_button.png");
 const statisticsButtonHoveredImage = new LoadableImage("menu/statistics_button_hovered.png");
+
+//Background
+
+const hills1Image = new LoadableImage("background/hills_1.png");
+const hills2Image = new LoadableImage("background/hills_2.png");
+const hills3Image = new LoadableImage("background/hills_3.png");
 
 var scaleX = 0;
 var scaleY = 0;
@@ -113,6 +122,8 @@ function mouseIn(e) {
 }
 
 function mouseClicked(e) {
+	
+	e.preventDefault();
 	
 	if (e.button == 0) {
 		

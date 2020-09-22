@@ -16,6 +16,7 @@ class LoadingScreen {
 			optionsScreen = new OptionsScreen();
 			statisticsScreen = new StatisticsScreen();
 			gameSelectionScreen = new GameSelectionScreen();
+			gameScreen = new GameScreen();
 			
 			currentScreen = mainMenuScreen;
 			
@@ -61,6 +62,7 @@ class MainMenuScreen {
 		
 		this.playButton.leftClickResult = function() {
 			
+			gameSelectionScreen.reset();
 			currentScreen = gameSelectionScreen;
 			
 		}
@@ -438,12 +440,18 @@ class GameSelectionScreen {
 	
 	constructor() {
 		
-		this.difficultyImage = new DynamicImage(difficultyImage, "center", 20, 0.6);
+		this.currentDifficulty = 0;
+		
+		this.difficultyImage = new DynamicImage(difficultyImage, "center", 20, 0.8);
+		
+		this.currentDifficultyImage = new DynamicImage(easyImage, "center", 100, 0.6);
 		
 		this.backButton = new DynamicButton(backButtonImage, 10, 358, 0.6);
 		
-		this.leftDifficultyButton = new DynamicButton(leftArrowButtonImage, 80, 100, 0.6);
-		this.rightDifficultyButton = new DynamicButton(rightArrowButtonImage, 496, 100, 0.6);
+		this.leftDifficultyButton = new DynamicButton(leftArrowButtonImage, 80, 105, 0.6);
+		this.rightDifficultyButton = new DynamicButton(rightArrowButtonImage, 496, 105, 0.6);
+		
+		this.playButton = new DynamicButton(playButtonImage, "center", 340, 0.4);
 		
 		this.backButton.hoverOutResult = function() {
 			
@@ -465,14 +473,121 @@ class GameSelectionScreen {
 			
 		}
 		
+		this.leftDifficultyButton.hoverOutResult = function() {
+			
+			this.setPosition(80, 105);
+			this.setScale(0.6);
+			
+		}
+		
+		this.leftDifficultyButton.hoverOverResult = function() {
+			
+			this.setPosition(79, 103);
+			this.setScale(0.65);
+			
+		}
+		
+		this.leftDifficultyButton.leftClickResult = function() {
+			
+			gameSelectionScreen.currentDifficulty--;
+			if (gameSelectionScreen.currentDifficulty < 0) {
+				
+				gameSelectionScreen.currentDifficulty = 3;
+				
+			}
+			
+			gameSelectionScreen.updateCurrentDifficultyImage();
+			
+		}
+		
+		this.rightDifficultyButton.hoverOutResult = function() {
+			
+			this.setPosition(496, 105);
+			this.setScale(0.6);
+			
+		}
+		
+		this.rightDifficultyButton.hoverOverResult = function() {
+			
+			this.setPosition(495, 103);
+			this.setScale(0.65);
+			
+		}
+		
+		this.rightDifficultyButton.leftClickResult = function() {
+			
+			gameSelectionScreen.currentDifficulty++;
+			if (gameSelectionScreen.currentDifficulty > 3) {
+				
+				gameSelectionScreen.currentDifficulty = 0;
+				
+			}
+			
+			gameSelectionScreen.updateCurrentDifficultyImage();
+			
+		}
+		
+		this.playButton.hoverOutResult = function() {
+			
+			this.setPosition("center", 340);
+			this.setScale(0.4);
+			
+		}
+		
+		this.playButton.hoverOverResult = function() {
+			
+			this.setPosition("center", 339);
+			this.setScale(0.45);
+			
+		}
+		
+		this.playButton.leftClickResult = function() {
+			
+			gameSelectionScreen.animateOut = true;
+			
+		}
+		
+		this.updateCurrentDifficultyImage();
+		
 	}
 	
 	generalUpdate() {
 		
-		this.backButton.update();
-		
-		this.leftDifficultyButton.update();
-		this.rightDifficultyButton.update();
+		if (!this.animateOut) {
+			
+			this.backButton.update();
+			
+			this.leftDifficultyButton.update();
+			this.rightDifficultyButton.update();
+			
+			this.playButton.update();
+			
+		} else {
+			
+			this.difficultyImage.moveY(-1);
+			
+			this.currentDifficultyImage.moveY(-1);
+			
+			this.backButton.moveY(-1);
+			
+			this.leftDifficultyButton.moveY(-1);
+			this.rightDifficultyButton.moveY(-1);
+			
+			this.playButton.moveY(-1);
+			
+			if (this.animationOut > 0) {
+				
+				this.animationOut -= 1;
+				
+			} else {
+				
+				console.log(this.animationOut);
+				gameScreen.reset(0, 0);
+				currentScreen = gameScreen;
+				
+			}
+			
+		}
 		
 	}
 	updatePhysics() {}
@@ -482,22 +597,107 @@ class GameSelectionScreen {
 		
 		this.difficultyImage.draw();
 		
+		this.currentDifficultyImage.draw();
+		
 		this.backButton.draw();
 		
 		this.leftDifficultyButton.draw();
 		this.rightDifficultyButton.draw();
+		
+		this.playButton.draw();
+		
+	}
+	
+	reset() {
+		
+		this.animationOut = 500;
+		this.animateOut = false;
+		
+	}
+	
+	updateCurrentDifficultyImage() {
+		
+		if (this.currentDifficulty == 0) {
+			
+			this.currentDifficultyImage.setImage(tutorialImage);
+			
+		}
+		
+		if (this.currentDifficulty == 1) {
+			
+			this.currentDifficultyImage.setImage(easyImage);
+			
+		}
+		
+		if (this.currentDifficulty == 2) {
+			
+			this.currentDifficultyImage.setImage(mediumImage);
+			
+		}
+		
+		if (this.currentDifficulty == 3) {
+			
+			this.currentDifficultyImage.setImage(difficultImage);
+			
+		}
 		
 	}
 	
 }
 class GameScreen {
 	
-	constructor(seed) {
+	constructor() {
+		
+		this.background = new BackgroundTerrain();
+		
+	}
+	
+	generalUpdate() {
+		
+		if (this.animateIn) {
+			
+			this.background.moveY(-0.5);
+			
+			if (this.animationInOffset > 0) {
+				
+				this.animationInOffset -= 0.5;
+				
+			} else {
+				
+				this.animateIn = false;
+				
+			}
+			
+		}
+		
+	}
+	
+	updatePhysics() {}
+	updateCollision() {}
+	
+	draw() {
+		
+		this.background.draw();
+		
+	}
+	
+	reset(difficulty, seed) {
+		
+		this.difficulty = 0;
+		this.seed = 0;
+		
+		this.animationInOffset = 200;
+		this.animateIn = true;
+		
+		this.background.resetPosition();
+		
+		this.background.moveY(401);
 		
 	}
 	
 }
-let mainMenuScreen = new MainMenuScreen();
-let optionsScreen = new OptionsScreen();
-let statisticsScreen = new StatisticsScreen();
-let gameSelectionScreen = new GameSelectionScreen();
+let mainMenuScreen;
+let optionsScreen;
+let statisticsScreen;
+let gameSelectionScreen;
+let gameScreen;
